@@ -15,11 +15,9 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.random.Random;
 
 public class PlacerBlockEntity extends LootableContainerBlockEntity implements ExtendedScreenHandlerFactory<BlockPos> {
-//  public final SimpleInventory inventory = new SimpleInventory(9);
-//  public final InventoryStorage storage = InventoryStorage.of(inventory, null);
-
   public DefaultedList<ItemStack> inventory = DefaultedList.ofSize(size(), ItemStack.EMPTY);
 
   public PlacerBlockEntity(BlockPos blockPos, BlockState blockState) {
@@ -44,6 +42,17 @@ public class PlacerBlockEntity extends LootableContainerBlockEntity implements E
   @Override
   protected void setHeldStacks(DefaultedList<ItemStack> inventory) {
     this.inventory = inventory;
+  }
+
+  public int chooseNonEmptySlot(Random random) {
+    int i = -1;
+    int j = 1;
+    for (int k = 0; k < this.inventory.size(); k++) {
+      if (!this.inventory.get(k).isEmpty() && random.nextInt(j++) == 0) {
+        i = k;
+      }
+    }
+    return i;
   }
 
   @Override
