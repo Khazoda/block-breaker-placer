@@ -50,7 +50,7 @@ public class PlacerBlock extends TemplateBlock {
   protected void activate(ServerWorld world, BlockState state, BlockPos pos) {
     PlacerBlockEntity be = world.getBlockEntity(pos, RBlockEntity.PLACER_BLOCK_ENTITY).orElse(null);
     if (be == null) {
-      Constants.LOG.warn("Ignoring dispensing attempt for Dispenser without matching block entity at {}", pos);
+      Constants.LOG.warn("No matching block entity at {}, skipping block placement", pos);
     } else {
       int i = be.chooseNonEmptySlot(world.random);
       if (i < 0) {
@@ -60,6 +60,7 @@ public class PlacerBlock extends TemplateBlock {
         Direction direction = state.get(Properties.FACING);
         Direction direction2 = world.isAir(pos.down()) ? direction : Direction.UP;
         be.setStack(i, placeBlock(world, direction, pos.offset(direction), direction2, itemStack));
+        be.markDirty();
       }
     }
   }
