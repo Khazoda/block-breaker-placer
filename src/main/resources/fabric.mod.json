@@ -19,7 +19,7 @@
           "com.khazoda.breakerplacer.BreakerPlacer"
 		],
 		"client": [
-			"com.khazoda.breakerplacer.BlockBreakerBlockPlacerClient"
+          "com.khazoda.breakerplacer.BreakerPlacerClient"
 		],
 		"fabric-datagen": [
 			"com.khazoda.datagen.BreakerPlacerDataGenerator"
