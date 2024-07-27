@@ -13,8 +13,8 @@ import net.minecraft.registry.entry.RegistryEntry;
 public class RBlock {
   public static final Item.Settings defaultItemSettings = new Item.Settings().maxCount(64);
 
-  public static final BreakerBlock BREAKER_BLOCK = register("block_breaker", new BreakerBlock(), defaultItemSettings);
-  public static final PlacerBlock PLACER_BLOCK = register("block_placer", new PlacerBlock(), defaultItemSettings);
+  public static final BreakerBlock BREAKER_BLOCK = register("breaker", new BreakerBlock(), defaultItemSettings);
+  public static final PlacerBlock PLACER_BLOCK = register("placer", new PlacerBlock(), defaultItemSettings);
 
   public static void init() {
     BreakerPlacer.loadedRegistries += 1;

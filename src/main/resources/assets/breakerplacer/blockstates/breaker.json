@@ -1,0 +1,26 @@
+{
+  "variants": {
+    "facing=down": {
+      "model": "breakerplacer:block/breaker_vertical",
+      "x": 180
+    },
+    "facing=east": {
+      "model": "breakerplacer:block/breaker",
+      "y": 90
+    },
+    "facing=north": {
+      "model": "breakerplacer:block/breaker"
+    },
+    "facing=south": {
+      "model": "breakerplacer:block/breaker",
+      "y": 180
+    },
+    "facing=up": {
+      "model": "breakerplacer:block/breaker_vertical"
+    },
+    "facing=west": {
+      "model": "breakerplacer:block/breaker",
+      "y": 270
+    }
+  }
+}

@@ -1,7 +1,7 @@
 {
   "parent": "minecraft:block/orientable",
   "textures": {
-    "front": "breakerplacer:block/block_placer_front",
+    "front": "breakerplacer:block/placer_front",
     "side": "minecraft:block/furnace_side",
     "top": "minecraft:block/furnace_top"
   }
