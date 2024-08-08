@@ -44,4 +44,9 @@ public class BreakerBlockEntity extends TemplateBlockEntity {
     }
     return allItemsAdded;
   }
+
+  @Override
+  public int size() {
+    return 10;
+  }
 }

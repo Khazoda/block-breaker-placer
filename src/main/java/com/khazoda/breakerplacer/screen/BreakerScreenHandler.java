@@ -16,13 +16,13 @@ public class BreakerScreenHandler extends Generic3x3ContainerScreenHandler {
   private final BlockPos pos;
 
   public BreakerScreenHandler(int syncId, PlayerInventory playerInventory, BlockPos pos) {
-    this(syncId, playerInventory, new SimpleInventory(9));
+    this(syncId, playerInventory, new SimpleInventory(10));
   }
 
   public BreakerScreenHandler(int syncId, PlayerInventory playerInventory, Inventory inventory) {
     super(syncId, playerInventory, inventory);
     this.pos = BlockPos.ORIGIN;
-    checkSize(inventory, 9);
+    checkSize(inventory, 10);
     this.inventory = inventory;
     inventory.onOpen(playerInventory.player);
 
@@ -35,6 +35,9 @@ public class BreakerScreenHandler extends Generic3x3ContainerScreenHandler {
         this.addSlot(new Slot(inventory, l + m * 3, 62 + l * 18, 17 + m * 18));
       }
     }
+    // Tool Slot (Global Slot ID 54)
+    Slot s = this.addSlot(new Slot(inventory, 9, 26, 35));
+
     // Player Inventory
     for (m = 0; m < 3; ++m) {
       for (l = 0; l < 9; ++l) {
@@ -53,7 +56,7 @@ public class BreakerScreenHandler extends Generic3x3ContainerScreenHandler {
 
   @Override
   public ScreenHandlerType<?> getType() {
-    return RScreenHandler.PLACER_SCREEN_HANDLER;
+    return RScreenHandler.BREAKER_SCREEN_HANDLER;
   }
 
   @Override

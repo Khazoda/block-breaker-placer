@@ -16,14 +16,10 @@ import net.minecraft.loot.LootTables;
 import net.minecraft.loot.context.LootContextParameterSet;
 import net.minecraft.loot.context.LootContextParameters;
 import net.minecraft.loot.context.LootContextTypes;
-import net.minecraft.registry.Registries;
 import net.minecraft.registry.RegistryKey;
-import net.minecraft.registry.tag.BlockTags;
-import net.minecraft.registry.tag.TagKey;
 import net.minecraft.screen.NamedScreenHandlerFactory;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.state.property.Properties;
-import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
@@ -81,14 +77,17 @@ public class BreakerBlock extends TemplateBlock {
       BlockState targetBlockState = world.getBlockState(targetPos);
       Block targetBlock = targetBlockState.getBlock();
       BlockEntity targetBE = targetBlockState.hasBlockEntity() ? world.getBlockEntity(targetPos) : null;
-      ItemStack toolForBreaking = new ItemStack(Items.STONE_PICKAXE);
+
+      /* Get breaker's held toolToBreakWith */
+      ItemStack toolToBreakWith = be.inventory.get(9);
+
       world.addBlockBreakParticles(targetPos, targetBlockState);
 
 
       try {
         //world.getPlayers().getFirst().sendMessage(Text.literal(getDroppedStacks(targetBlockState, world, targetPos, targetBE, toolForBreaking).toString() + "  |  " + toolForBreaking));
 
-        List<ItemStack> l = getDroppedStacks(targetBlockState, world, targetPos, targetBE, toolForBreaking);
+        List<ItemStack> l = getDroppedStacks(targetBlockState, world, targetPos, targetBE, toolToBreakWith);
         l.forEach(stack -> {
               // Drop items on floor if breaker is full
               if (!be.addToFirstFreeSlot(stack)) {
@@ -118,7 +117,7 @@ public class BreakerBlock extends TemplateBlock {
     }
   }
 
-  /* TODO: Implement sound, particles on break, and a way to swap what tool the breaker holds */
+  /* TODO: Implement sound, particles on break, and a way to swap what toolToBreakWith the breaker holds */
   public List<ItemStack> getDroppedStacks(BlockState state, ServerWorld world, BlockPos pos, @Nullable BlockEntity blockEntity, ItemStack tool) {
     CachedBlockPosition cachedPos = new CachedBlockPosition(world, pos, false);
     RegistryKey<LootTable> registryKey = state.getBlock().getLootTableKey();
