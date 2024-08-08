@@ -7,6 +7,7 @@ import net.minecraft.block.entity.LootableContainerBlockEntity;
 import net.minecraft.inventory.Inventories;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket;
 import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
@@ -14,13 +15,12 @@ import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.random.Random;
 
-public abstract class TemplateBlockEntity extends LootableContainerBlockEntity implements ExtendedScreenHandlerFactory<BlockPos> {
+public abstract class BaseBlockEntity extends LootableContainerBlockEntity implements ExtendedScreenHandlerFactory<BlockPos>{
   public DefaultedList<ItemStack> inventory = DefaultedList.ofSize(size(), ItemStack.EMPTY);
 
-  protected TemplateBlockEntity(BlockEntityType<?> blockEntityType, BlockPos blockPos, BlockState blockState) {
+  protected BaseBlockEntity(BlockEntityType<?> blockEntityType, BlockPos blockPos, BlockState blockState) {
     super(blockEntityType, blockPos, blockState);
   }
-
 
   @Override
   protected DefaultedList<ItemStack> getHeldStacks() {
@@ -53,6 +53,11 @@ public abstract class TemplateBlockEntity extends LootableContainerBlockEntity i
   protected void writeNbt(NbtCompound nbt, RegistryWrapper.WrapperLookup registryLookup) {
     Inventories.writeNbt(nbt, inventory, registryLookup);
     super.writeNbt(nbt, registryLookup);
+  }
+
+  @Override
+  public BlockEntityUpdateS2CPacket toUpdatePacket() {
+    return BlockEntityUpdateS2CPacket.create(this);
   }
 
   @Override

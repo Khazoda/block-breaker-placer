@@ -2,6 +2,7 @@ package com.khazoda.breakerplacer.block;
 
 import com.khazoda.breakerplacer.Constants;
 import com.khazoda.breakerplacer.block.entity.BreakerBlockEntity;
+import com.khazoda.breakerplacer.networking.BlockBreakParticlePayload;
 import com.khazoda.breakerplacer.registry.RBlockEntity;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.block.*;
@@ -19,6 +20,8 @@ import net.minecraft.loot.context.LootContextTypes;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.screen.NamedScreenHandlerFactory;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.sound.SoundCategory;
+import net.minecraft.sound.SoundEvents;
 import net.minecraft.state.property.Properties;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.hit.BlockHitResult;
@@ -36,7 +39,7 @@ import java.util.List;
 
 import static net.minecraft.block.DoorBlock.HALF;
 
-public class BreakerBlock extends TemplateBlock {
+public class BreakerBlock extends BaseBlock {
   public static final MapCodec<BreakerBlock> CODEC = createCodec(BreakerBlock::new);
 
   public BreakerBlock(Settings settings) {
@@ -60,7 +63,6 @@ public class BreakerBlock extends TemplateBlock {
     return ActionResult.SUCCESS;
   }
 
-  /* TODO: BREAKING BEHAVIOUR IS WEIRD, NEEDS TO BE CONSISTENT WITH THE TOOL USED */
   protected void activate(ServerWorld world, BlockState state, BlockPos pos) {
     BreakerBlockEntity be = world.getBlockEntity(pos, RBlockEntity.BREAKER_BLOCK_ENTITY).orElse(null);
 
@@ -71,19 +73,14 @@ public class BreakerBlock extends TemplateBlock {
       if (state.isAir()) return;
 
       Direction direction = state.get(Properties.FACING);
-      Direction direction2 = world.isAir(pos.down()) ? direction : Direction.UP;
 
       BlockPos targetPos = pos.offset(direction);
       BlockState targetBlockState = world.getBlockState(targetPos);
       Block targetBlock = targetBlockState.getBlock();
       BlockEntity targetBE = targetBlockState.hasBlockEntity() ? world.getBlockEntity(targetPos) : null;
 
-      /* Get breaker's held toolToBreakWith */
+      /* Get breaker's held tool to break blocks with */
       ItemStack toolToBreakWith = be.inventory.get(9);
-
-      world.addBlockBreakParticles(targetPos, targetBlockState);
-
-
       try {
         //world.getPlayers().getFirst().sendMessage(Text.literal(getDroppedStacks(targetBlockState, world, targetPos, targetBE, toolForBreaking).toString() + "  |  " + toolForBreaking));
 
@@ -94,20 +91,37 @@ public class BreakerBlock extends TemplateBlock {
                 dropStacks(targetBlockState, world, targetPos, targetBE);
               }
 
-              /* Break upper part of door */
-              if (targetBlockState.getBlock() instanceof DoorBlock) {
-                breakTallBlock(world, targetPos, targetBlockState);
-              }
+              // Remove broken block from the world expeditiously
+              world.setBlockState(targetPos, targetBlockState.getFluidState().isOf(Fluids.WATER) ? Blocks.WATER.getDefaultState() : Blocks.AIR.getDefaultState(), Block.NOTIFY_LISTENERS | Block.FORCE_STATE);
 
-              world.setBlockState(targetPos, Blocks.AIR.getDefaultState(), Block.NOTIFY_LISTENERS | Block.FORCE_STATE);
+              // Do post-block break update stuff
               world.updateNeighbors(targetPos, targetBlock);
               state.updateNeighbors(world, targetPos, Block.NOTIFY_LISTENERS);
               world.emitGameEvent(GameEvent.BLOCK_DESTROY, targetPos, GameEvent.Emitter.of(targetBlockState));
+
+              // Play sound and show block breaking particles to clients nearby
+              BlockBreakParticlePayload.sendBlockBreakParticlePayloadToClients(world, new BlockBreakParticlePayload(targetPos, targetBlockState));
+              world.playSound(
+                  null,
+                  targetPos,
+                  targetBlockState.getSoundGroup().getBreakSound(),
+                  SoundCategory.BLOCKS,
+                  1f,
+                  1f
+              );
+
             }
         );
-        // If no blocks were broken, do custom logic
-        if (l.isEmpty()) {
-
+        // If no blocks were broken play a failure sound
+        if (l.isEmpty() && targetBlock != Blocks.AIR) {
+          world.playSound(
+              null,
+              targetPos,
+              SoundEvents.BLOCK_METAL_PRESSURE_PLATE_CLICK_OFF,
+              SoundCategory.BLOCKS,
+              1f,
+              1f
+          );
         }
       } catch (Exception e) {
         Constants.LOG.warn("Failed to add block ItemStack to breaker. {}", e.getMessage());
@@ -117,7 +131,6 @@ public class BreakerBlock extends TemplateBlock {
     }
   }
 
-  /* TODO: Implement sound, particles on break, and a way to swap what toolToBreakWith the breaker holds */
   public List<ItemStack> getDroppedStacks(BlockState state, ServerWorld world, BlockPos pos, @Nullable BlockEntity blockEntity, ItemStack tool) {
     CachedBlockPosition cachedPos = new CachedBlockPosition(world, pos, false);
     RegistryKey<LootTable> registryKey = state.getBlock().getLootTableKey();
@@ -141,24 +154,6 @@ public class BreakerBlock extends TemplateBlock {
       return lootTable.generateLoot(parameterSet);
     }
     return Collections.emptyList();
-  }
-
-  /**
-   * Implementation of breaking a double high block without a player component
-   *
-   * @see net.minecraft.block.TallPlantBlock#onBreakInCreative(World, BlockPos, BlockState, PlayerEntity)
-   */
-  protected static void breakTallBlock(World world, BlockPos pos, BlockState state) {
-    DoubleBlockHalf doubleBlockHalf = state.get(HALF);
-    if (doubleBlockHalf == DoubleBlockHalf.LOWER) {
-      BlockPos blockPos = pos.up();
-      BlockState blockState = world.getBlockState(blockPos);
-      if (blockState.isOf(state.getBlock()) && blockState.get(HALF) == DoubleBlockHalf.UPPER) {
-        BlockState blockState2 = blockState.getFluidState().isOf(Fluids.WATER) ? Blocks.WATER.getDefaultState() : Blocks.AIR.getDefaultState();
-        world.setBlockState(blockPos, blockState2, Block.NOTIFY_ALL | Block.SKIP_DROPS);
-        world.syncWorldEvent(WorldEvents.BLOCK_BROKEN, blockPos, Block.getRawIdFromState(blockState));
-      }
-    }
   }
 
   @Override

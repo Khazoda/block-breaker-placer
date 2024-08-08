@@ -2,6 +2,7 @@ package com.khazoda.breakerplacer;
 
 import com.khazoda.breakerplacer.registry.RBlock;
 import com.khazoda.breakerplacer.registry.RBlockEntity;
+import com.khazoda.breakerplacer.registry.RNetworking;
 import com.khazoda.breakerplacer.registry.RScreenHandler;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
@@ -18,10 +19,11 @@ public class BreakerPlacer implements ModInitializer {
 		RBlock.init();
 		RBlockEntity.init();
 		RScreenHandler.init();
+		RNetworking.init();
 
 		ItemGroupEvents.modifyEntriesEvent(ItemGroups.REDSTONE).register(content -> content.addAfter(Items.CRAFTER, RBlock.PLACER_BLOCK));
 		ItemGroupEvents.modifyEntriesEvent(ItemGroups.REDSTONE).register(content -> content.addAfter(Items.CRAFTER, RBlock.BREAKER_BLOCK));
 
-		Constants.LOG.info("[BB&BP] {}/3 Blocks placed!",loadedRegistries);
+		Constants.LOG.info("[BB&BP] {}/4 Blocks placed!",loadedRegistries);
 	}
 }

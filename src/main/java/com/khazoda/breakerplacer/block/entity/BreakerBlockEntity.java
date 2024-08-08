@@ -4,11 +4,22 @@ import com.khazoda.breakerplacer.registry.RBlockEntity;
 import com.khazoda.breakerplacer.screen.BreakerScreenHandler;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.Inventories;
+import net.minecraft.inventory.SidedInventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.screen.ScreenHandler;
+import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Direction;
+import org.jetbrains.annotations.Nullable;
 
-public class BreakerBlockEntity extends TemplateBlockEntity {
+public class BreakerBlockEntity extends BaseBlockEntity implements SidedInventory {
+  private static final int[] INVENTORY_SLOTS = new int[]{0, 1, 2, 3, 4, 5, 6, 7, 8};
+  private static final int[] TOOL_SLOT = new int[]{9};
+
   public BreakerBlockEntity(BlockPos blockPos, BlockState blockState) {
     super(RBlockEntity.BREAKER_BLOCK_ENTITY, blockPos, blockState);
   }
@@ -23,7 +34,8 @@ public class BreakerBlockEntity extends TemplateBlockEntity {
     boolean allItemsAdded = false;
     int i = this.getMaxCount(stack);
 
-    for (int j = 0; j < this.inventory.size(); j++) {
+    /* .size() - 1 to prevent tool slot from receiving items */
+    for (int j = 0; j < this.inventory.size() - 1; j++) {
       ItemStack itemStack = this.inventory.get(j);
       if (itemStack.isEmpty() || ItemStack.areItemsAndComponentsEqual(stack, itemStack)) {
         int k = Math.min(stack.getCount(), i - itemStack.getCount());
@@ -45,8 +57,27 @@ public class BreakerBlockEntity extends TemplateBlockEntity {
     return allItemsAdded;
   }
 
+  /* Prevents items being taken from tool slot */
+  @Override
+  public int[] getAvailableSlots(Direction side) {
+    return INVENTORY_SLOTS;
+  }
+
+  @Override
+  public boolean canInsert(int slot, ItemStack stack, @Nullable Direction dir) {
+    return this.isValid(slot, stack);
+  }
+
+  @Override
+  public boolean canExtract(int slot, ItemStack stack, Direction dir) {
+    return slot != 9;
+  }
+
+
   @Override
   public int size() {
     return 10;
   }
+
+
 }

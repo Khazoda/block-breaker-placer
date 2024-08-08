@@ -24,9 +24,6 @@ public class RBlockEntity {
 
 
   public static void init() {
-    /* Lets crates work with hoppers and other item transfer */
-//    ItemStorage.SIDED.registerForBlockEntity((blockEntity, direction) -> blockEntity.inventory, PLACER_BLOCK_ENTITY);
-
     BreakerPlacer.loadedRegistries += 1;
   }
 }

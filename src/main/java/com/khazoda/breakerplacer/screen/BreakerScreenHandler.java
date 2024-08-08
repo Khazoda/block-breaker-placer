@@ -36,7 +36,8 @@ public class BreakerScreenHandler extends Generic3x3ContainerScreenHandler {
       }
     }
     // Tool Slot (Global Slot ID 54)
-    Slot s = this.addSlot(new Slot(inventory, 9, 26, 35));
+    this.addSlot(new Slot(inventory, 9, 26, 35));
+
 
     // Player Inventory
     for (m = 0; m < 3; ++m) {
@@ -49,6 +50,39 @@ public class BreakerScreenHandler extends Generic3x3ContainerScreenHandler {
       this.addSlot(new Slot(playerInventory, m, 8 + m * 18, 142));
     }
   }
+
+  @Override
+  public ItemStack quickMove(PlayerEntity player, int slot) {
+    ItemStack itemStack = ItemStack.EMPTY;
+    Slot shiftClickedSlot = this.slots.get(slot);
+    if (shiftClickedSlot.hasStack()) {
+      ItemStack itemStackToMove = shiftClickedSlot.getStack();
+      itemStack = itemStackToMove.copy();
+
+      if (slot < 9 || slot == 54) {
+        if (!this.insertItem(itemStackToMove, 9, 45, true)) {
+          return ItemStack.EMPTY;
+        }
+      } else if (!this.insertItem(itemStackToMove, 0, 9, false)) {
+        return ItemStack.EMPTY;
+      }
+
+      if (itemStackToMove.isEmpty()) {
+        shiftClickedSlot.setStack(ItemStack.EMPTY);
+      } else {
+        shiftClickedSlot.markDirty();
+      }
+
+      if (itemStackToMove.getCount() == itemStack.getCount()) {
+        return ItemStack.EMPTY;
+      }
+
+      shiftClickedSlot.onTakeItem(player, itemStackToMove);
+    }
+
+    return itemStack;
+  }
+
 
   public BlockPos getPos() {
     return pos;

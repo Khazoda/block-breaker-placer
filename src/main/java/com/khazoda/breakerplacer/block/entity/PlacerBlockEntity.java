@@ -7,7 +7,7 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.util.math.BlockPos;
 
-public class PlacerBlockEntity extends TemplateBlockEntity {
+public class PlacerBlockEntity extends BaseBlockEntity {
 
   public PlacerBlockEntity(BlockPos blockPos, BlockState blockState) {
     super(RBlockEntity.PLACER_BLOCK_ENTITY, blockPos, blockState);

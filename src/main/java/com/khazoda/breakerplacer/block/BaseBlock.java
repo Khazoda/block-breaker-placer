@@ -23,17 +23,17 @@ import net.minecraft.util.math.random.Random;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
-public abstract class TemplateBlock extends FacingBlock implements BlockEntityProvider {
+public abstract class BaseBlock extends FacingBlock implements BlockEntityProvider {
   public static final DirectionProperty FACING = Properties.FACING;
   public static final BooleanProperty TRIGGERED = Properties.TRIGGERED;
   public static final Settings defaultSettings = Settings.create();
 
-  protected TemplateBlock(Settings settings) {
+  protected BaseBlock(Settings settings) {
     super(settings);
     this.setDefaultState(this.stateManager.getDefaultState().with(FACING, Direction.NORTH).with(TRIGGERED, Boolean.FALSE));
   }
 
-  protected TemplateBlock() {
+  protected BaseBlock() {
     this(defaultSettings);
   }
 

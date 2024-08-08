@@ -23,7 +23,7 @@ import net.minecraft.world.World;
 import net.minecraft.world.event.GameEvent;
 import org.jetbrains.annotations.Nullable;
 
-public class PlacerBlock extends TemplateBlock {
+public class PlacerBlock extends BaseBlock {
   public static final MapCodec<PlacerBlock> CODEC = createCodec(PlacerBlock::new);
 
   public PlacerBlock(Settings settings) {
