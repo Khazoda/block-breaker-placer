@@ -116,7 +116,7 @@ public class BreakerBlock extends BaseBlock {
         if (l.isEmpty() && targetBlock != Blocks.AIR) {
           world.playSound(
               null,
-              targetPos,
+              pos,
               SoundEvents.BLOCK_METAL_PRESSURE_PLATE_CLICK_OFF,
               SoundCategory.BLOCKS,
               1f,
