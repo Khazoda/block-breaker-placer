@@ -1,9 +1,6 @@
 package com.khazoda.breakerplacer;
 
-import com.khazoda.breakerplacer.registry.RBlock;
-import com.khazoda.breakerplacer.registry.RBlockEntity;
-import com.khazoda.breakerplacer.registry.RNetworking;
-import com.khazoda.breakerplacer.registry.RScreenHandler;
+import com.khazoda.breakerplacer.registry.*;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.minecraft.item.ItemGroups;
@@ -18,12 +15,13 @@ public class BreakerPlacer implements ModInitializer {
 
     RBlock.init();
     RBlockEntity.init();
+    RSound.init();
     RScreenHandler.init();
     RNetworking.init();
 
     ItemGroupEvents.modifyEntriesEvent(ItemGroups.REDSTONE).register(content -> content.addAfter(Items.CRAFTER, RBlock.PLACER_BLOCK));
     ItemGroupEvents.modifyEntriesEvent(ItemGroups.REDSTONE).register(content -> content.addAfter(Items.CRAFTER, RBlock.BREAKER_BLOCK));
 
-    Constants.LOG.info("[BB&BP] {}/4 Blocks placed!", loadedRegistries);
+    Constants.LOG.info("[BB&BP] {}/5 Blocks placed!", loadedRegistries);
   }
 }

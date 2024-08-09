@@ -4,6 +4,7 @@ import com.khazoda.breakerplacer.Constants;
 import com.khazoda.breakerplacer.block.entity.PlacerBlockEntity;
 import com.khazoda.breakerplacer.networking.ParticlePayload;
 import com.khazoda.breakerplacer.registry.RBlockEntity;
+import com.khazoda.breakerplacer.registry.RSound;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
@@ -79,9 +80,9 @@ public class PlacerBlock extends BaseBlock {
           world.playSound(
               null,
               pos.offset(direction.getOpposite()),
-              SoundEvents.BLOCK_NOTE_BLOCK_BANJO.value(),
+              RSound.FAIL,
               SoundCategory.BLOCKS,
-              0.5f,
+              1f,
               1f
           );
         } else {

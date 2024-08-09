@@ -5,6 +5,7 @@ import com.khazoda.breakerplacer.block.entity.BreakerBlockEntity;
 import com.khazoda.breakerplacer.networking.BlockBreakParticlePayload;
 import com.khazoda.breakerplacer.networking.ParticlePayload;
 import com.khazoda.breakerplacer.registry.RBlockEntity;
+import com.khazoda.breakerplacer.registry.RSound;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -103,13 +104,13 @@ public class BreakerBlock extends BaseBlock {
           BlockBreakParticlePayload.sendBlockBreakParticlePayloadToClients(world, new BlockBreakParticlePayload(targetPos, targetBlockState));
           ParticlePayload.sendParticlePacketToClients(world, new ParticlePayload(ParticleTypes.FLAME, targetPos, new Vec3d(0, 0, 0), 0f, (byte) 5, (byte) 2));
           ParticlePayload.sendParticlePacketToClients(world, new ParticlePayload(ParticleTypes.WHITE_SMOKE, targetPos, new Vec3d(0, 0.4, 0), 0.02f, (byte) 10, (byte) 2));
-          world.playSound(null, targetPos, SoundEvents.ENTITY_BLAZE_SHOOT, SoundCategory.BLOCKS, 0.6f, 1f);
+          world.playSound(null, targetPos, RSound.BREAK, SoundCategory.BLOCKS, 0.6f, 1f);
           world.playSound(null, targetPos, targetBlockState.getSoundGroup().getBreakSound(), SoundCategory.BLOCKS, 1f, 1f);
 
         });
         // If no blocks were broken play a failure sound
         if (l.isEmpty() && targetBlock != Blocks.AIR) {
-          world.playSound(null, pos, SoundEvents.BLOCK_NOTE_BLOCK_BANJO.value(), SoundCategory.BLOCKS, 1f, 1f);
+          world.playSound(null, pos, RSound.FAIL, SoundCategory.BLOCKS, 1f, 1f);
         }
       } catch (Exception e) {
         Constants.LOG.warn("Failed to add block ItemStack to breaker. {}", e.getMessage());

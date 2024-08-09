@@ -1,0 +1,12 @@
+{
+  "break": {
+    "sounds": [
+      "breakerplacer:break"
+    ]
+  },
+  "fail": {
+    "sounds": [
+      "breakerplacer:fail"
+    ]
+  }
+}
