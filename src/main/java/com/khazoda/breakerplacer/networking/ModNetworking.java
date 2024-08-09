@@ -23,7 +23,7 @@ public class ModNetworking {
         float z = randomFloatBetween(r.nextFloat(), -0.48f, 0.48f);
 
         for (int j = 0; j < particleCount; j++) {
-          world.addParticle(particleType, center.x + x, center.y + y, center.z + z,
+          world.addParticle(particleType, center.x + x + offset.x, center.y + y + offset.y, center.z + z + offset.z,
               randomVelocity(r.nextFloat(), velocityMagnitude),
               randomVelocity(r.nextFloat(), velocityMagnitude),
               randomVelocity(r.nextFloat(), velocityMagnitude));

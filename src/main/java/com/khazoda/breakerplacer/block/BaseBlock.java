@@ -1,15 +1,15 @@
 package com.khazoda.breakerplacer.block;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockEntityProvider;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.FacingBlock;
+import net.minecraft.block.*;
 import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.block.enums.NoteBlockInstrument;
+import net.minecraft.block.piston.PistonBehavior;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.screen.NamedScreenHandlerFactory;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.sound.BlockSoundGroup;
 import net.minecraft.state.StateManager;
 import net.minecraft.state.property.BooleanProperty;
 import net.minecraft.state.property.DirectionProperty;
@@ -26,7 +26,7 @@ import org.jetbrains.annotations.Nullable;
 public abstract class BaseBlock extends FacingBlock implements BlockEntityProvider {
   public static final DirectionProperty FACING = Properties.FACING;
   public static final BooleanProperty TRIGGERED = Properties.TRIGGERED;
-  public static final Settings defaultSettings = Settings.create();
+  public static final Settings defaultSettings = Settings.create().sounds(BlockSoundGroup.STONE).strength(3.5f).pistonBehavior(PistonBehavior.BLOCK).instrument(NoteBlockInstrument.BASS).mapColor(MapColor.STONE_GRAY);
 
   protected BaseBlock(Settings settings) {
     super(settings);

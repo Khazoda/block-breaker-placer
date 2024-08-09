@@ -1,0 +1,7 @@
+{
+  "replace": false,
+  "values": [
+    "breakerplacer:placer",
+    "breakerplacer:breaker"
+  ]
+}

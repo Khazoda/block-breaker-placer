@@ -101,8 +101,8 @@ public class BreakerBlock extends BaseBlock {
 
           // Play sound and show block breaking particles to clients nearby
           BlockBreakParticlePayload.sendBlockBreakParticlePayloadToClients(world, new BlockBreakParticlePayload(targetPos, targetBlockState));
-          ParticlePayload.sendParticlePacketToClients(world, new ParticlePayload(ParticleTypes.FLAME, targetPos, new Vec3d(0, 0.4, 0), 0f, (byte) 5, (byte) 2));
-          ParticlePayload.sendParticlePacketToClients(world, new ParticlePayload(ParticleTypes.WHITE_SMOKE, pos.up(), new Vec3d(0, 0, 0), 0.02f, (byte) 10, (byte) 2));
+          ParticlePayload.sendParticlePacketToClients(world, new ParticlePayload(ParticleTypes.FLAME, targetPos, new Vec3d(0, 0, 0), 0f, (byte) 5, (byte) 2));
+          ParticlePayload.sendParticlePacketToClients(world, new ParticlePayload(ParticleTypes.WHITE_SMOKE, targetPos, new Vec3d(0, 0.4, 0), 0.02f, (byte) 10, (byte) 2));
           world.playSound(null, targetPos, SoundEvents.ENTITY_BLAZE_SHOOT, SoundCategory.BLOCKS, 0.6f, 1f);
           world.playSound(null, targetPos, targetBlockState.getSoundGroup().getBreakSound(), SoundCategory.BLOCKS, 1f, 1f);
 

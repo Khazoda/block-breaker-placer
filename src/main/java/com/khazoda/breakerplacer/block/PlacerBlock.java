@@ -87,8 +87,8 @@ public class PlacerBlock extends BaseBlock {
         } else {
           ParticlePayload.sendParticlePacketToClients(world,
               new ParticlePayload(ParticleTypes.WHITE_SMOKE,
-                  pos.up(),
-                  new Vec3d(0, 0, 0),
+                  pos,
+                  new Vec3d(0, 0.65, 0),
                   0.02f,
                   (byte) 10,
                   (byte) 2
