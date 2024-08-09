@@ -2,6 +2,7 @@ package com.khazoda.breakerplacer.block;
 
 import com.khazoda.breakerplacer.Constants;
 import com.khazoda.breakerplacer.block.entity.PlacerBlockEntity;
+import com.khazoda.breakerplacer.networking.ParticlePayload;
 import com.khazoda.breakerplacer.registry.RBlockEntity;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.block.BlockState;
@@ -11,13 +12,17 @@ import net.minecraft.item.AutomaticItemPlacementContext;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.particle.ParticleTypes;
 import net.minecraft.screen.NamedScreenHandlerFactory;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.sound.SoundCategory;
+import net.minecraft.sound.SoundEvents;
 import net.minecraft.state.property.Properties;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.world.World;
 import net.minecraft.world.event.GameEvent;
@@ -65,11 +70,37 @@ public class PlacerBlock extends BaseBlock {
     }
   }
 
-  public static ItemStack placeBlock(ServerWorld world, Direction direction, BlockPos pos, Direction direction2, ItemStack itemStack) {
+  protected static ItemStack placeBlock(ServerWorld world, Direction direction, BlockPos pos, Direction direction2, ItemStack itemStack) {
     Item item = itemStack.getItem();
     if (item instanceof BlockItem) {
       try {
-        ((BlockItem) item).place(new AutomaticItemPlacementContext(world, pos, direction, itemStack, direction2));
+        /* Places block, and if placement fails (i.e. a block is already in the placement spot), play the error sound */
+        if (((BlockItem) item).place(new AutomaticItemPlacementContext(world, pos, direction, itemStack, direction2)) == ActionResult.FAIL) {
+          world.playSound(
+              null,
+              pos.offset(direction.getOpposite()),
+              SoundEvents.BLOCK_NOTE_BLOCK_BANJO.value(),
+              SoundCategory.BLOCKS,
+              0.5f,
+              1f
+          );
+        } else {
+          ParticlePayload.sendParticlePacketToClients(world,
+              new ParticlePayload(ParticleTypes.WHITE_SMOKE,
+                  pos.up(),
+                  0.02f,
+                  (byte) 10,
+                  (byte) 2
+              ));
+          world.playSound(
+              null,
+              pos,
+              SoundEvents.ENTITY_BREEZE_SHOOT,
+              SoundCategory.BLOCKS,
+              0.7f,
+              1f
+          );
+        }
       } catch (Exception var8) {
         Constants.LOG.error("Error trying to place block at {}", pos, var8);
       }

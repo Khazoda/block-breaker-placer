@@ -29,10 +29,10 @@ public class BreakerPlacerClient implements ClientModInitializer {
       context.client().execute(() -> {
         if (context.client().world == null)
           return;
-        ModNetworking.spawnParticlesOnClient(payload.particle(), context.client().world, payload.pos(), payload.particleCount(), payload.offset(), payload.spread());
+        ModNetworking.spawnParticlesOnClient(payload.particle(), context.client().world, payload.pos(), payload.particleCount(), payload.spread(), payload.iterations());
       });
     });
-    /* Particle Networking Packet Client Receipt */
+    /* Block Breaking Particle Networking Packet Client Receipt */
     ClientPlayNetworking.registerGlobalReceiver(BlockBreakParticlePayload.ID, (payload, context) -> {
       if (context.client() == null) return;
       assert context.client().player != null;

@@ -19,17 +19,16 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.UUID;
 
-public record ParticlePayload(BlockPos pos, ParticleEffect particle, int particleCount,
-                              Vec3d offset,
-                              float spread) implements CustomPayload {
+public record ParticlePayload(ParticleEffect particle, BlockPos pos,
+                              float spread, byte iterations, byte particleCount) implements CustomPayload {
   public static final Id<ParticlePayload> ID = new Id<>(Identifier.of(Constants.NAMESPACE, "particle_packet"));
 
   public static final PacketCodec<RegistryByteBuf, ParticlePayload> CODEC = PacketCodec.tuple(
-      BlockPos.PACKET_CODEC, ParticlePayload::pos,
       ParticleTypes.PACKET_CODEC, ParticlePayload::particle,
-      PacketCodecs.INTEGER, ParticlePayload::particleCount,
-      PacketCodecs.codec(Vec3d.CODEC), ParticlePayload::offset,
+      BlockPos.PACKET_CODEC, ParticlePayload::pos,
       PacketCodecs.FLOAT, ParticlePayload::spread,
+      PacketCodecs.BYTE, ParticlePayload::iterations,
+      PacketCodecs.BYTE, ParticlePayload::particleCount,
       ParticlePayload::new);
 
 
@@ -42,7 +41,7 @@ public record ParticlePayload(BlockPos pos, ParticleEffect particle, int particl
     BlockPos builderPos = new BlockPos(payload.pos.getX(), payload.pos.getY(), payload.pos.getZ());
     /* Iterate through players that can see particle event emitter */
     PlayerLookup.tracking(world, builderPos).forEach(player -> {
-      ServerPlayNetworking.send(player, new ParticlePayload(payload.pos, payload.particle, payload.particleCount, payload.offset, payload.spread));
+      ServerPlayNetworking.send(player, new ParticlePayload(payload.particle, payload.pos , payload.spread, payload.iterations, payload.particleCount));
     });
   }
 }

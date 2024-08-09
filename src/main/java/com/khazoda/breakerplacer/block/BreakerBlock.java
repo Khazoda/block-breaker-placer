@@ -3,6 +3,7 @@ package com.khazoda.breakerplacer.block;
 import com.khazoda.breakerplacer.Constants;
 import com.khazoda.breakerplacer.block.entity.BreakerBlockEntity;
 import com.khazoda.breakerplacer.networking.BlockBreakParticlePayload;
+import com.khazoda.breakerplacer.networking.ParticlePayload;
 import com.khazoda.breakerplacer.registry.RBlockEntity;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.block.*;
@@ -17,6 +18,7 @@ import net.minecraft.loot.LootTables;
 import net.minecraft.loot.context.LootContextParameterSet;
 import net.minecraft.loot.context.LootContextParameters;
 import net.minecraft.loot.context.LootContextTypes;
+import net.minecraft.particle.ParticleTypes;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.screen.NamedScreenHandlerFactory;
 import net.minecraft.server.world.ServerWorld;
@@ -101,6 +103,14 @@ public class BreakerBlock extends BaseBlock {
 
               // Play sound and show block breaking particles to clients nearby
               BlockBreakParticlePayload.sendBlockBreakParticlePayloadToClients(world, new BlockBreakParticlePayload(targetPos, targetBlockState));
+              ParticlePayload.sendParticlePacketToClients(world,
+                  new ParticlePayload(ParticleTypes.FLAME,
+                      targetPos,
+                      0f,
+                      (byte) 5,
+                      (byte) 2
+                  ));
+
               world.playSound(
                   null,
                   targetPos,
@@ -117,7 +127,7 @@ public class BreakerBlock extends BaseBlock {
           world.playSound(
               null,
               pos,
-              SoundEvents.BLOCK_METAL_PRESSURE_PLATE_CLICK_OFF,
+              SoundEvents.BLOCK_NOTE_BLOCK_BANJO.value(),
               SoundCategory.BLOCKS,
               1f,
               1f

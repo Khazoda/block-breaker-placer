@@ -1,42 +1,59 @@
 package com.khazoda.breakerplacer.networking;
 
-import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.particle.ParticleEffect;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.random.Random;
 import net.minecraft.world.World;
-
-import java.util.Objects;
-import java.util.Random;
 
 
 public class ModNetworking {
 
-    /* Call this method after sending packet when wanting to spawn particles */
-    public static void spawnParticlesOnClient(ParticleEffect particleType, World world, BlockPos pos, int particleCount, Vec3d offset, float spread) {
-        try {
-            Vec3d vec = pos.toCenterPos();
-            Random rand = new Random();
-            for (int i = 0; i < particleCount; i++) {
-                if (spread == 0)
-                    world.addParticle(particleType, vec.x + offset.x, vec.y + offset.y, vec.z + offset.x, 0, 0, 0);
-                if (spread != 0) world.addParticle(particleType, vec.x + offset.x, vec.y + offset.y, vec.z + offset.x,
-                        rand.nextFloat(-spread, spread), rand.nextFloat(-spread, spread), rand.nextFloat(-spread, spread));
-            }
-        } catch (Exception e) {
-            System.out.println("Caught log-in animation exception");
-        }
-    }
+  /* Call this method after sending packet when wanting to spawn particles */
+  public static void spawnParticlesOnClient(ParticleEffect particleType, World world, BlockPos pos, int particleCount, float velocityMagnitude, byte iterations) {
+    try {
+      Vec3d center = pos.toCenterPos();
+      Random r = world.random;
 
-    /* Call this method clientside after sending packet when wanting to play sound */
-    public static void playSoundOnClient(SoundEvent sound, World world, BlockPos pos, float volume, float pitch) {
-        try {
-            Vec3d vec = pos.toCenterPos();
-            world.playSoundAtBlockCenter(BlockPos.ofFloored(vec), sound, SoundCategory.BLOCKS, volume, pitch, true);
-        } catch (Exception e) {
-            System.out.println("Caught sound exception");
+      for (int i = 0; i < iterations; i++) {
+        float x = randomFloatBetween(r.nextFloat(), -0.48f, 0.48f);
+        float y = randomFloatBetween(r.nextFloat(), -0.48f, 0.48f);
+        float z = randomFloatBetween(r.nextFloat(), -0.48f, 0.48f);
+
+        for (int j = 0; j < particleCount; j++) {
+          world.addParticle(particleType, center.x + x, center.y + y, center.z + z,
+              randomVelocity(r.nextFloat(), velocityMagnitude),
+              randomVelocity(r.nextFloat(), velocityMagnitude),
+              randomVelocity(r.nextFloat(), velocityMagnitude));
         }
+      }
+
+    } catch (Exception e) {
+      System.out.println("Caught log-in animation exception");
     }
+  }
+
+  private static float randomVelocity(float r, float spread) {
+    float x = ((((r * 2) - 1) / 2) * spread);
+    System.out.println(x);
+    return x;
+  }
+
+  private static float randomFloatBetween(float r, float min, float max) {
+    return ((((r * (max - min)) + min)));
+  }
+
+  /* Call this method clientside after sending packet when wanting to play sound */
+  public static void playSoundOnClient(SoundEvent sound, World world, BlockPos pos, float volume, float pitch) {
+    try {
+      Vec3d vec = pos.toCenterPos();
+      world.playSoundAtBlockCenter(BlockPos.ofFloored(vec), sound, SoundCategory.BLOCKS, volume, pitch, true);
+    } catch (Exception e) {
+      System.out.println("Caught sound exception");
+    }
+  }
+
+
 }
