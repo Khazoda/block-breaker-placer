@@ -12,7 +12,7 @@ import net.minecraft.world.World;
 public class ModNetworking {
 
   /* Call this method after sending packet when wanting to spawn particles */
-  public static void spawnParticlesOnClient(ParticleEffect particleType, World world, BlockPos pos, int particleCount, float velocityMagnitude, byte iterations) {
+  public static void spawnParticlesOnClient(ParticleEffect particleType, World world, BlockPos pos, Vec3d offset, int particleCount, float velocityMagnitude, byte iterations) {
     try {
       Vec3d center = pos.toCenterPos();
       Random r = world.random;
@@ -36,9 +36,7 @@ public class ModNetworking {
   }
 
   private static float randomVelocity(float r, float spread) {
-    float x = ((((r * 2) - 1) / 2) * spread);
-    System.out.println(x);
-    return x;
+    return ((((r * 2) - 1) / 2) * spread);
   }
 
   private static float randomFloatBetween(float r, float min, float max) {

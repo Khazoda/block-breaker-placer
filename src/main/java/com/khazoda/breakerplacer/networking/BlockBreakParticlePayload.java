@@ -8,18 +8,16 @@ import net.minecraft.network.RegistryByteBuf;
 import net.minecraft.network.codec.PacketCodec;
 import net.minecraft.network.codec.PacketCodecs;
 import net.minecraft.network.packet.CustomPayload;
-import net.minecraft.particle.ParticleTypes;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
 
 public record BlockBreakParticlePayload(BlockPos pos, BlockState state) implements CustomPayload {
   public static final CustomPayload.Id<BlockBreakParticlePayload> ID = new CustomPayload.Id<>(Identifier.of(Constants.NAMESPACE, "block_break_particle_packet"));
 
   public static final PacketCodec<RegistryByteBuf, BlockBreakParticlePayload> CODEC = PacketCodec.tuple(
       BlockPos.PACKET_CODEC, BlockBreakParticlePayload::pos,
-      PacketCodecs.codec(BlockState.CODEC),BlockBreakParticlePayload::state,
+      PacketCodecs.codec(BlockState.CODEC), BlockBreakParticlePayload::state,
       BlockBreakParticlePayload::new);
 
   @Override

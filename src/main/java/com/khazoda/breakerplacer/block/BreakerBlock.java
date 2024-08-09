@@ -6,13 +6,14 @@ import com.khazoda.breakerplacer.networking.BlockBreakParticlePayload;
 import com.khazoda.breakerplacer.networking.ParticlePayload;
 import com.khazoda.breakerplacer.registry.RBlockEntity;
 import com.mojang.serialization.MapCodec;
-import net.minecraft.block.*;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.block.enums.DoubleBlockHalf;
 import net.minecraft.block.pattern.CachedBlockPosition;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.Fluids;
-import net.minecraft.item.*;
+import net.minecraft.item.ItemStack;
 import net.minecraft.loot.LootTable;
 import net.minecraft.loot.LootTables;
 import net.minecraft.loot.context.LootContextParameterSet;
@@ -32,14 +33,11 @@ import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.world.World;
-import net.minecraft.world.WorldEvents;
 import net.minecraft.world.event.GameEvent;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collections;
 import java.util.List;
-
-import static net.minecraft.block.DoorBlock.HALF;
 
 public class BreakerBlock extends BaseBlock {
   public static final MapCodec<BreakerBlock> CODEC = createCodec(BreakerBlock::new);
@@ -88,50 +86,30 @@ public class BreakerBlock extends BaseBlock {
 
         List<ItemStack> l = getDroppedStacks(targetBlockState, world, targetPos, targetBE, toolToBreakWith);
         l.forEach(stack -> {
-              // Drop items on floor if breaker is full
-              if (!be.addToFirstFreeSlot(stack)) {
-                dropStacks(targetBlockState, world, targetPos, targetBE);
-              }
+          // Drop items on floor if breaker is full
+          if (!be.addToFirstFreeSlot(stack)) {
+            dropStacks(targetBlockState, world, targetPos, targetBE);
+          }
 
-              // Remove broken block from the world expeditiously
-              world.setBlockState(targetPos, targetBlockState.getFluidState().isOf(Fluids.WATER) ? Blocks.WATER.getDefaultState() : Blocks.AIR.getDefaultState(), Block.NOTIFY_LISTENERS | Block.FORCE_STATE);
+          // Remove broken block from the world expeditiously
+          world.setBlockState(targetPos, targetBlockState.getFluidState().isOf(Fluids.WATER) ? Blocks.WATER.getDefaultState() : Blocks.AIR.getDefaultState(), Block.NOTIFY_LISTENERS | Block.FORCE_STATE);
 
-              // Do post-block break update stuff
-              world.updateNeighbors(targetPos, targetBlock);
-              state.updateNeighbors(world, targetPos, Block.NOTIFY_LISTENERS);
-              world.emitGameEvent(GameEvent.BLOCK_DESTROY, targetPos, GameEvent.Emitter.of(targetBlockState));
+          // Do post-block break update stuff
+          world.updateNeighbors(targetPos, targetBlock);
+          state.updateNeighbors(world, targetPos, Block.NOTIFY_LISTENERS);
+          world.emitGameEvent(GameEvent.BLOCK_DESTROY, targetPos, GameEvent.Emitter.of(targetBlockState));
 
-              // Play sound and show block breaking particles to clients nearby
-              BlockBreakParticlePayload.sendBlockBreakParticlePayloadToClients(world, new BlockBreakParticlePayload(targetPos, targetBlockState));
-              ParticlePayload.sendParticlePacketToClients(world,
-                  new ParticlePayload(ParticleTypes.FLAME,
-                      targetPos,
-                      0f,
-                      (byte) 5,
-                      (byte) 2
-                  ));
+          // Play sound and show block breaking particles to clients nearby
+          BlockBreakParticlePayload.sendBlockBreakParticlePayloadToClients(world, new BlockBreakParticlePayload(targetPos, targetBlockState));
+          ParticlePayload.sendParticlePacketToClients(world, new ParticlePayload(ParticleTypes.FLAME, targetPos, new Vec3d(0, 0.4, 0), 0f, (byte) 5, (byte) 2));
+          ParticlePayload.sendParticlePacketToClients(world, new ParticlePayload(ParticleTypes.WHITE_SMOKE, pos.up(), new Vec3d(0, 0, 0), 0.02f, (byte) 10, (byte) 2));
+          world.playSound(null, targetPos, SoundEvents.ENTITY_BLAZE_SHOOT, SoundCategory.BLOCKS, 0.6f, 1f);
+          world.playSound(null, targetPos, targetBlockState.getSoundGroup().getBreakSound(), SoundCategory.BLOCKS, 1f, 1f);
 
-              world.playSound(
-                  null,
-                  targetPos,
-                  targetBlockState.getSoundGroup().getBreakSound(),
-                  SoundCategory.BLOCKS,
-                  1f,
-                  1f
-              );
-
-            }
-        );
+        });
         // If no blocks were broken play a failure sound
         if (l.isEmpty() && targetBlock != Blocks.AIR) {
-          world.playSound(
-              null,
-              pos,
-              SoundEvents.BLOCK_NOTE_BLOCK_BANJO.value(),
-              SoundCategory.BLOCKS,
-              1f,
-              1f
-          );
+          world.playSound(null, pos, SoundEvents.BLOCK_NOTE_BLOCK_BANJO.value(), SoundCategory.BLOCKS, 1f, 1f);
         }
       } catch (Exception e) {
         Constants.LOG.warn("Failed to add block ItemStack to breaker. {}", e.getMessage());
@@ -146,11 +124,7 @@ public class BreakerBlock extends BaseBlock {
     RegistryKey<LootTable> registryKey = state.getBlock().getLootTableKey();
     if (registryKey == LootTables.EMPTY) return Collections.emptyList();
 
-    LootContextParameterSet.Builder builder = new LootContextParameterSet.Builder(world)
-        .add(LootContextParameters.ORIGIN, Vec3d.ofCenter(pos))
-        .add(LootContextParameters.TOOL, tool)
-        .add(LootContextParameters.BLOCK_STATE, state)
-        .addOptional(LootContextParameters.BLOCK_ENTITY, blockEntity);
+    LootContextParameterSet.Builder builder = new LootContextParameterSet.Builder(world).add(LootContextParameters.ORIGIN, Vec3d.ofCenter(pos)).add(LootContextParameters.TOOL, tool).add(LootContextParameters.BLOCK_STATE, state).addOptional(LootContextParameters.BLOCK_ENTITY, blockEntity);
 
     LootContextParameterSet parameterSet = builder.build(LootContextTypes.BLOCK);
     ServerWorld serverWorld = parameterSet.getWorld();

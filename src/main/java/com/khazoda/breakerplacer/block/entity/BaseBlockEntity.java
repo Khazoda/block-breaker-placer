@@ -15,7 +15,7 @@ import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.random.Random;
 
-public abstract class BaseBlockEntity extends LootableContainerBlockEntity implements ExtendedScreenHandlerFactory<BlockPos>{
+public abstract class BaseBlockEntity extends LootableContainerBlockEntity implements ExtendedScreenHandlerFactory<BlockPos> {
   public DefaultedList<ItemStack> inventory = DefaultedList.ofSize(size(), ItemStack.EMPTY);
 
   protected BaseBlockEntity(BlockEntityType<?> blockEntityType, BlockPos blockPos, BlockState blockState) {

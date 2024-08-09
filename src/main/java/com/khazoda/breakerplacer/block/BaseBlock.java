@@ -71,7 +71,7 @@ public abstract class BaseBlock extends FacingBlock implements BlockEntityProvid
     }
   }
 
- protected abstract void scheduledTick(BlockState state, ServerWorld world, BlockPos pos, Random random);
+  protected abstract void scheduledTick(BlockState state, ServerWorld world, BlockPos pos, Random random);
 
   @Override
   protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {

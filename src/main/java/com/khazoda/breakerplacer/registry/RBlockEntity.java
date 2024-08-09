@@ -4,7 +4,6 @@ import com.khazoda.breakerplacer.BreakerPlacer;
 import com.khazoda.breakerplacer.Constants;
 import com.khazoda.breakerplacer.block.entity.BreakerBlockEntity;
 import com.khazoda.breakerplacer.block.entity.PlacerBlockEntity;
-import net.fabricmc.fabric.api.transfer.v1.item.ItemStorage;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;

@@ -10,20 +10,20 @@ import net.minecraft.item.ItemGroups;
 import net.minecraft.item.Items;
 
 public class BreakerPlacer implements ModInitializer {
-	public static int loadedRegistries = 0;
+  public static int loadedRegistries = 0;
 
-	@Override
-	public void onInitialize() {
-		Constants.LOG.info("[BB&BP] Placing blocks..");
+  @Override
+  public void onInitialize() {
+    Constants.LOG.info("[BB&BP] Placing blocks..");
 
-		RBlock.init();
-		RBlockEntity.init();
-		RScreenHandler.init();
-		RNetworking.init();
+    RBlock.init();
+    RBlockEntity.init();
+    RScreenHandler.init();
+    RNetworking.init();
 
-		ItemGroupEvents.modifyEntriesEvent(ItemGroups.REDSTONE).register(content -> content.addAfter(Items.CRAFTER, RBlock.PLACER_BLOCK));
-		ItemGroupEvents.modifyEntriesEvent(ItemGroups.REDSTONE).register(content -> content.addAfter(Items.CRAFTER, RBlock.BREAKER_BLOCK));
+    ItemGroupEvents.modifyEntriesEvent(ItemGroups.REDSTONE).register(content -> content.addAfter(Items.CRAFTER, RBlock.PLACER_BLOCK));
+    ItemGroupEvents.modifyEntriesEvent(ItemGroups.REDSTONE).register(content -> content.addAfter(Items.CRAFTER, RBlock.BREAKER_BLOCK));
 
-		Constants.LOG.info("[BB&BP] {}/4 Blocks placed!",loadedRegistries);
-	}
+    Constants.LOG.info("[BB&BP] {}/4 Blocks placed!", loadedRegistries);
+  }
 }
