@@ -3,15 +3,16 @@
   "id": "breakerplacer",
   "version": "${version}",
   "name": "Block Breaker & Block Placer",
-  "description": "This is an example description! Tell everyone what your mod is about!",
+  "description": "2 new vanilla-friendly redstone blocks; One for breaking and one for placing.",
   "authors": [
-    "Me!"
+    "Khazoda"
   ],
   "contact": {
-    "homepage": "https://fabricmc.net/",
-    "sources": "https://github.com/FabricMC/fabric-example-mod"
+    "homepage": "https://khazoda.com",
+    "sources": "https://github.com/Khazoda/block-breaker-placer",
+    "issues": "https://github.com/Khazoda/block-breaker-placer/issues"
   },
-  "license": "CC0-1.0",
+  "license": "MIT",
   "icon": "assets/breakerplacer/icon.png",
   "environment": "*",
   "entrypoints": {
