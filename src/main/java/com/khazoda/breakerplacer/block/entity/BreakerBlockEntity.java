@@ -1,6 +1,6 @@
 package com.khazoda.breakerplacer.block.entity;
 
-import com.khazoda.breakerplacer.registry.RBlockEntity;
+import com.khazoda.breakerplacer.registry.RegBlockEntities;
 import com.khazoda.breakerplacer.screen.BreakerScreenHandler;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerInventory;
@@ -16,7 +16,7 @@ public class BreakerBlockEntity extends BaseBlockEntity implements SidedInventor
   private static final int[] TOOL_SLOT = new int[]{9};
 
   public BreakerBlockEntity(BlockPos blockPos, BlockState blockState) {
-    super(RBlockEntity.BREAKER_BLOCK_ENTITY, blockPos, blockState);
+    super(RegBlockEntities.BREAKER_BLOCK_ENTITY, blockPos, blockState);
   }
 
   @Override

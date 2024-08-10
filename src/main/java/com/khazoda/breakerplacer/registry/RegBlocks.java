@@ -10,7 +10,7 @@ import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.registry.entry.RegistryEntry;
 
-public class RBlock {
+public class RegBlocks {
   public static final Item.Settings defaultItemSettings = new Item.Settings().maxCount(64);
 
   public static final BreakerBlock BREAKER_BLOCK = register("breaker", new BreakerBlock(), defaultItemSettings);

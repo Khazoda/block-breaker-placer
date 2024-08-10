@@ -7,7 +7,7 @@ import net.minecraft.registry.Registry;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.util.Identifier;
 
-public class RSound {
+public class RegSounds {
   public static final SoundEvent BREAK = register("break");
   public static final SoundEvent FAIL = register("fail");
 

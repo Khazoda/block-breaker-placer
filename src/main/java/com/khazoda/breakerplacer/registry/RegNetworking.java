@@ -6,7 +6,7 @@ import com.khazoda.breakerplacer.networking.ParticlePayload;
 import com.khazoda.breakerplacer.networking.SoundPayload;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 
-public class RNetworking {
+public class RegNetworking {
 
   public static void init() {
     PayloadTypeRegistry.playS2C().register(ParticlePayload.ID, ParticlePayload.CODEC);

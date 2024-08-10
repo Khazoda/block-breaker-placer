@@ -3,8 +3,8 @@ package com.khazoda.breakerplacer.block;
 import com.khazoda.breakerplacer.Constants;
 import com.khazoda.breakerplacer.block.entity.PlacerBlockEntity;
 import com.khazoda.breakerplacer.networking.ParticlePayload;
-import com.khazoda.breakerplacer.registry.RBlockEntity;
-import com.khazoda.breakerplacer.registry.RSound;
+import com.khazoda.breakerplacer.registry.RegBlockEntities;
+import com.khazoda.breakerplacer.registry.RegSounds;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
@@ -54,7 +54,7 @@ public class PlacerBlock extends BaseBlock {
   }
 
   protected void activate(ServerWorld world, BlockState state, BlockPos pos) {
-    PlacerBlockEntity be = world.getBlockEntity(pos, RBlockEntity.PLACER_BLOCK_ENTITY).orElse(null);
+    PlacerBlockEntity be = world.getBlockEntity(pos, RegBlockEntities.PLACER_BLOCK_ENTITY).orElse(null);
     if (be == null) {
       Constants.LOG.warn("No matching block entity at {}, skipping block placement", pos);
     } else {
@@ -80,20 +80,23 @@ public class PlacerBlock extends BaseBlock {
           world.playSound(
               null,
               pos.offset(direction.getOpposite()),
-              RSound.FAIL,
+              RegSounds.FAIL,
               SoundCategory.BLOCKS,
               1f,
               1f
           );
         } else {
-          ParticlePayload.sendParticlePacketToClients(world,
-              new ParticlePayload(ParticleTypes.WHITE_SMOKE,
-                  pos,
-                  new Vec3d(0, 0.65, 0),
-                  0.02f,
-                  (byte) 10,
-                  (byte) 2
-              ));
+          // Only shows particles floating if block above is not solid
+          if (!world.getBlockState(pos.up()).isSolidBlock(world, pos.up())) {
+            ParticlePayload.sendParticlePacketToClients(world,
+                new ParticlePayload(ParticleTypes.WHITE_SMOKE,
+                    pos,
+                    new Vec3d(0, 0.65, 0),
+                    0.02f,
+                    (byte) 10,
+                    (byte) 2
+                ));
+          }
           world.playSound(
               null,
               pos,

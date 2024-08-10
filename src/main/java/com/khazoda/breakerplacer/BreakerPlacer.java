@@ -11,17 +11,15 @@ public class BreakerPlacer implements ModInitializer {
 
   @Override
   public void onInitialize() {
-    Constants.LOG.info("[BB&BP] Placing blocks..");
+    RegBlocks.init();
+    RegBlockEntities.init();
+    RegSounds.init();
+    RegScreenHandlers.init();
+    RegNetworking.init();
 
-    RBlock.init();
-    RBlockEntity.init();
-    RSound.init();
-    RScreenHandler.init();
-    RNetworking.init();
+    ItemGroupEvents.modifyEntriesEvent(ItemGroups.REDSTONE).register(content -> content.addAfter(Items.CRAFTER, RegBlocks.PLACER_BLOCK));
+    ItemGroupEvents.modifyEntriesEvent(ItemGroups.REDSTONE).register(content -> content.addAfter(Items.CRAFTER, RegBlocks.BREAKER_BLOCK));
 
-    ItemGroupEvents.modifyEntriesEvent(ItemGroups.REDSTONE).register(content -> content.addAfter(Items.CRAFTER, RBlock.PLACER_BLOCK));
-    ItemGroupEvents.modifyEntriesEvent(ItemGroups.REDSTONE).register(content -> content.addAfter(Items.CRAFTER, RBlock.BREAKER_BLOCK));
-
-    Constants.LOG.info("[BB&BP] {}/5 Blocks placed!", loadedRegistries);
+    Constants.LOG.info("[BB&BP] {}/5 common registries initialized!", loadedRegistries);
   }
 }

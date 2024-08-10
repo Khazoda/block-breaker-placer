@@ -9,17 +9,17 @@ import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.util.Identifier;
 
-public class RBlockEntity {
+public class RegBlockEntities {
 
 
   public static final BlockEntityType<PlacerBlockEntity> PLACER_BLOCK_ENTITY = Registry.register(
       Registries.BLOCK_ENTITY_TYPE, Identifier.of(Constants.NAMESPACE, "placer_block_entity"),
       BlockEntityType.Builder.create(PlacerBlockEntity::new,
-          RBlock.PLACER_BLOCK).build());
+          RegBlocks.PLACER_BLOCK).build());
   public static final BlockEntityType<BreakerBlockEntity> BREAKER_BLOCK_ENTITY = Registry.register(
       Registries.BLOCK_ENTITY_TYPE, Identifier.of(Constants.NAMESPACE, "breaker_block_entity"),
       BlockEntityType.Builder.create(BreakerBlockEntity::new,
-          RBlock.BREAKER_BLOCK).build());
+          RegBlocks.BREAKER_BLOCK).build());
 
 
   public static void init() {

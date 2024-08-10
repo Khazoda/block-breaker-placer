@@ -1,6 +1,6 @@
 package com.khazoda.breakerplacer.screen;
 
-import com.khazoda.breakerplacer.registry.RScreenHandler;
+import com.khazoda.breakerplacer.registry.RegScreenHandlers;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.Inventory;
@@ -90,7 +90,7 @@ public class BreakerScreenHandler extends Generic3x3ContainerScreenHandler {
 
   @Override
   public ScreenHandlerType<?> getType() {
-    return RScreenHandler.BREAKER_SCREEN_HANDLER;
+    return RegScreenHandlers.BREAKER_SCREEN_HANDLER;
   }
 
   @Override

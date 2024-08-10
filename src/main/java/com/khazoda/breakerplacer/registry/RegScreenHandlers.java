@@ -11,7 +11,7 @@ import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 
-public class RScreenHandler {
+public class RegScreenHandlers {
 
   public static final ScreenHandlerType<PlacerScreenHandler> PLACER_SCREEN_HANDLER = new ExtendedScreenHandlerType<>(PlacerScreenHandler::new, BlockPos.PACKET_CODEC.cast());
   public static final ScreenHandlerType<BreakerScreenHandler> BREAKER_SCREEN_HANDLER = new ExtendedScreenHandlerType<>(BreakerScreenHandler::new, BlockPos.PACKET_CODEC.cast());
