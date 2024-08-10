@@ -28,8 +28,6 @@ public record BlockBreakParticlePayload(BlockPos pos, BlockState state) implemen
   public static void sendBlockBreakParticlePayloadToClients(ServerWorld world, BlockBreakParticlePayload payload) {
     BlockPos builderPos = new BlockPos(payload.pos.getX(), payload.pos.getY(), payload.pos.getZ());
     /* Iterate through players that can see particle event emitter */
-    PlayerLookup.tracking(world, builderPos).forEach(player -> {
-      ServerPlayNetworking.send(player, new BlockBreakParticlePayload(payload.pos, payload.state));
-    });
+    PlayerLookup.tracking(world, builderPos).forEach(player -> ServerPlayNetworking.send(player, new BlockBreakParticlePayload(payload.pos, payload.state)));
   }
 }

@@ -36,9 +36,7 @@ public record ParticlePayload(ParticleEffect particle, BlockPos pos, Vec3d offse
   public static void sendParticlePacketToClients(ServerWorld world, ParticlePayload payload) {
     BlockPos builderPos = new BlockPos(payload.pos.getX(), payload.pos.getY(), payload.pos.getZ());
     /* Iterate through players that can see particle event emitter */
-    PlayerLookup.tracking(world, builderPos).forEach(player -> {
-      ServerPlayNetworking.send(player, new ParticlePayload(payload.particle, payload.pos, payload.offset, payload.spread, payload.iterations, payload.particleCount));
-    });
+    PlayerLookup.tracking(world, builderPos).forEach(player -> ServerPlayNetworking.send(player, new ParticlePayload(payload.particle, payload.pos, payload.offset, payload.spread, payload.iterations, payload.particleCount)));
   }
 }
 

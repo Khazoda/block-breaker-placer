@@ -37,12 +37,11 @@ public class BreakerBlockEntity extends BaseBlockEntity implements SidedInventor
         if (k > 0) {
           if (itemStack.isEmpty()) {
             this.setStack(j, stack.split(k));
-            allItemsAdded = true;
           } else {
             stack.decrement(k);
             itemStack.increment(k);
-            allItemsAdded = true;
           }
+          allItemsAdded = true;
         }
         if (stack.isEmpty()) {
           break;

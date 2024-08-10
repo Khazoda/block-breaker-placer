@@ -29,9 +29,7 @@ public record SoundPayload(BlockPos pos, SoundEvent soundEvent,
   public static void sendNoPlayerPacketToClients(ServerWorld world, SoundPayload payload) {
     BlockPos builderPos = new BlockPos(payload.pos.getX(), payload.pos.getY(), payload.pos.getZ());
     /* Iterate through players that can see sound event emitter */
-    PlayerLookup.tracking(world, builderPos).forEach(player -> {
-      ServerPlayNetworking.send(player, new SoundPayload(payload.pos, payload.soundEvent, payload.pitch));
-    });
+    PlayerLookup.tracking(world, builderPos).forEach(player -> ServerPlayNetworking.send(player, new SoundPayload(payload.pos, payload.soundEvent, payload.pitch)));
   }
 
 }
