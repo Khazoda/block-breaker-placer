@@ -24,7 +24,8 @@ Here are just some of the many applications:
   
 # Recipes 🔨
 The recipes for both blocks follow similar patterns to the dropper and dispenser:
-![Recipe Gif](https://github.com/Khazoda/block-breaker-placer/raw/Web-Assets/description_common/recipe_video.gif)
+![Breaker Recipe](https://github.com/Khazoda/block-breaker-placer/raw/Web-Assets/description_common/breaker.png)
+![Placer Recipe](https://github.com/Khazoda/block-breaker-placer/raw/Web-Assets/description_common/placer.png)
 
 # Demonstration 📽️
 
