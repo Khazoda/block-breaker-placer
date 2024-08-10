@@ -33,6 +33,16 @@ The recipes for both blocks follow similar patterns to the dropper and dispenser
   <source src="https://github.com/Khazoda/block-breaker-placer/raw/Web-Assets/description_common/demo_video.mp4" type="video/mp4">
 </video>
 
+# Balance Considerations ❗
+During development it was clear that Breakers would circumvent survival Minecraft's balancing considerably (e.g. breaking obsidian before the player has a diamond pickaxe).
+
+For this reason, the breaker block respects a block's harvestability settings. This means that the Breaker will only break the block in front of it if it has the correct tool.
+
+A simple set of examples:
+- Breaker has no tool - Can break dirt, logs, fletching table but not stone
+- Breaker has wooden pickaxe - Can break stone, coal ore but not iron ore
+- Breaker has shears - Can break leaves, tall grass, peonies but not stone
+
 #### This mod is part of my _Basic_ series of mods, which try to foster a vanilla-feeling experience while also giving players new content to enjoy. The 'Basic Storage' mod works especially well with this mod.
 #### [View Collection](https://modrinth.com/collection/YqBvBHEr)
 
