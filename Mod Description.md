@@ -43,10 +43,11 @@ A simple set of examples:
 - Breaker has wooden pickaxe - Can break stone, coal ore but not iron ore
 - Breaker has shears - Can break leaves, tall grass, peonies but not stone
 
+![Divider](https://github.com/Khazoda/block-breaker-placer/blob/Web-Assets/description_common/divider.png?raw=true)
+
 #### This mod is part of my _Basic_ series of mods, which try to foster a vanilla-feeling experience while also giving players new content to enjoy. The 'Basic Storage' mod works especially well with this mod.
 #### [View Collection](https://modrinth.com/collection/YqBvBHEr)
 
-![Divider](https://github.com/Khazoda/block-breaker-placer/blob/Web-Assets/description_common/divider.png?raw=true)
 
 
 # Frequently Asked Questions (FAQ) 🧡
