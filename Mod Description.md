@@ -5,60 +5,48 @@ Supported Languages | [Help translate this mod into *your* language](https://poe
 
 </sub>
 
-![Basic Storage Banner](https://raw.githubusercontent.com/Khazoda/basic-storage/Web-Assets/description_common/banner.png)
+![Block Breaker & Placer Banner](https://raw.githubusercontent.com/Khazoda/block-breaker-placer/Web-Assets/description_common/banner.png)
 
-# About 📦
+# About 🪨
 
-Basic Storage adds a single new item, the **Crate**.
-This block can hold up to 1 billion items **of a single type**.
-Items can be quickly deposited and withdrawn
-- by directly interacting with crates (no GUI)
-- by using hoppers/hopper carts
-- by using third party mods (e.g. AE2, RS, Tom's Storage)
+_Block Breaker & Block Placer_ adds two new blocks.  
+Similarly to vanilla's Dispenser and Dropper, the Breaker and Placer are activated with a redstone pulse.
+- The Breaker breaks the block in front of it and places it in its inventory.
+- The Placer places a random block from its inventory in the spot in front of it.
 
 ### Why use this mod?
-Basic Storage is not the first mod to add blocks that function like crates.
-This mod exists specifically to fulfil the following requirements:
-- Simplified vanilla-esque design (no upgrades, no multiple crate types)
-- Large storage size, low crafting cost (1 billion items, made from planks and sticks)
-- Low file size & performance footprint
-- Up to date with modern Minecraft versions
-
-If you'd prefer to use a similar mod with blocks that support item compacting, block locking, an upgrade system etc., then please scroll further down to the **Acknowledgments** section. Some similar mods are listed there.
+If you've ever wishes that you could turn items into placed blocks, or vise-versa, this mod is for you.  
+Here are just some of the many applications:
+- Automated cobblestone generators
+- Secret entrances without using pistons
+- New redstone contraptions (redstone torch inside a Placer?)
+- Automatic cocoa bean farm
   
-# Recipe 🔨
-Crates can be made from any type of wooden planks, as well as sticks.
-
-![Recipe Gif](https://github.com/Khazoda/basic-storage/raw/Web-Assets/description_common/recipe_video.gif)
+# Recipes 🔨
+The recipes for both blocks follow similar patterns to the dropper and dispenser:
+![Recipe Gif](https://github.com/Khazoda/block-breaker-placer/raw/Web-Assets/description_common/recipe_video.gif)
 
 # Demonstration 📽️
-Crates save you time by giving you easy access to all of your materials.
 
 <video width="480" height="480" autoplay loop controls>
-  <source src="https://github.com/Khazoda/basic-storage/raw/Web-Assets/description_common/demo_video.mp4" type="video/mp4">
+  <source src="https://github.com/Khazoda/block-breaker-placer/raw/Web-Assets/description_common/demo_video.mp4" type="video/mp4">
 </video>
 
-
-![Divider](https://github.com/Khazoda/basic-storage/blob/Web-Assets/description_common/divider.png?raw=true)
-
-#### This mod is part of my _Basic_ series of mods, which try to foster a vanilla-feeling experience while also giving players new content to enjoy.
+#### This mod is part of my _Basic_ series of mods, which try to foster a vanilla-feeling experience while also giving players new content to enjoy. The 'Basic Storage' mod works especially well with this mod.
 #### [View Collection](https://modrinth.com/collection/YqBvBHEr)
 
-![Divider](https://github.com/Khazoda/basic-storage/blob/Web-Assets/description_common/divider.png?raw=true)
+![Divider](https://github.com/Khazoda/block-breaker-placer/blob/Web-Assets/description_common/divider.png?raw=true)
 
 
 # Frequently Asked Questions (FAQ) 🧡
 
 - What are the mod's dependencies?  
-  _`Basic Storage has no extra dependencies`_
+  _`This mod has no extra dependencies`_
 - Is there a NeoForge/Fabric/quilt version?  
-  _`There is currently a Fabric version. NeoForge is planned. Quilt may work, but is not explicitly supported.`_
+  _`There is currently a Fabric version. NeoForge is not currently planned. Quilt may work, but is not explicitly supported.`_
 - Can you backport the mod to Minecraft 1.X.X?  
-  _`Unfortunately I don't have the time to backport Basic Storage to earlier versions. The mod will however support each new version of Minecraft.`_
+  _`Unfortunately I don't have the time to backport this mod to earlier versions. The mod will however support each new version of Minecraft.`_
 - I found a bug / my game crashed  
-   _`If you find any problems with Basic Storage, please feel encouraged to create an issue on the GitHub repository issue tracker. Bug reports are incredibly helpful, and help make Basic Storage the best it can be.`_
-
-# Acknowledgements 💌
-Basic Storage wouldn't exist without the hard work and creativity of those that came before it. I'd like to give special thanks to the talented developers and artists behind JABBA, Storage Drawers and Extended Drawers, as well as every other barrel/drawer mod that came before them.
+   _`If you find any problems with this mod, please feel encouraged to create an issue on the GitHub repository issue tracker. Bug reports are incredibly helpful, and help make this mod the best it can be.`_
 
 __Thank you to all the wonderful translation contributors!__
