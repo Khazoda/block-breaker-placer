@@ -25,6 +25,7 @@ import net.minecraft.registry.RegistryKey;
 import net.minecraft.screen.NamedScreenHandlerFactory;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
+import net.minecraft.sound.SoundEvents;
 import net.minecraft.state.property.Properties;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.hit.BlockHitResult;
@@ -106,13 +107,22 @@ public class BreakerBlock extends BaseBlock {
             ParticlePayload.sendParticlePacketToClients(world, new ParticlePayload(ParticleTypes.WHITE_SMOKE, targetPos, new Vec3d(0, 0.4, 0), 0.02f, (byte) 10, (byte) 2));
 
           // Play sounds to clients nearby
-          world.playSound(null, targetPos, RegSounds.BREAK, SoundCategory.BLOCKS, 0.6f, 1f);
-          world.playSound(null, targetPos, targetBlockState.getSoundGroup().getBreakSound(), SoundCategory.BLOCKS, 1f, 1f);
+          world.playSound(null, targetPos, RegSounds.BREAK, SoundCategory.BLOCKS, 0.35f, 1f);
+          world.playSound(null, targetPos, targetBlockState.getSoundGroup().getBreakSound(), SoundCategory.BLOCKS, 0.75f, 1f);
 
         });
         // If no blocks were broken play a failure sound
         if (l.isEmpty() && targetBlock != Blocks.AIR) {
           world.playSound(null, pos, RegSounds.FAIL, SoundCategory.BLOCKS, 1f, 1f);
+        } else if(targetBlock == Blocks.AIR) {
+          world.playSound(
+              null,
+              pos,
+              SoundEvents.BLOCK_DISPENSER_FAIL,
+              SoundCategory.BLOCKS,
+              1f,
+              1f
+          );
         }
       } catch (Exception e) {
         Constants.LOG.warn("Failed to add block ItemStack to breaker. {}", e.getMessage());

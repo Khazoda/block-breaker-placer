@@ -59,8 +59,16 @@ public class PlacerBlock extends BaseBlock {
       Constants.LOG.warn("No matching block entity at {}, skipping block placement", pos);
     } else {
       int i = be.chooseNonEmptySlot(world.random);
+      world.emitGameEvent(GameEvent.BLOCK_ACTIVATE, pos, GameEvent.Emitter.of(be.getCachedState()));
       if (i < 0) {
-        world.emitGameEvent(GameEvent.BLOCK_ACTIVATE, pos, GameEvent.Emitter.of(be.getCachedState()));
+        world.playSound(
+            null,
+            pos,
+            SoundEvents.BLOCK_DISPENSER_FAIL,
+            SoundCategory.BLOCKS,
+            1f,
+            1f
+        );
       } else {
         ItemStack itemStack = be.getStack(i);
         Direction direction = state.get(Properties.FACING);
@@ -102,7 +110,7 @@ public class PlacerBlock extends BaseBlock {
               pos,
               SoundEvents.ENTITY_BREEZE_SHOOT,
               SoundCategory.BLOCKS,
-              0.7f,
+              0.3f,
               1f
           );
         }
