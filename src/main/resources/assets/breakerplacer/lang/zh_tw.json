@@ -1,5 +1,5 @@
 {
-  "block.breakerplacer.breaker": "Breaker",
-  "block.breakerplacer.placer": "Placer",
-  "container.breakerplacer.breaker.tool_slot_tooltip": "Use Tool"
+  "block.breakerplacer.breaker": "破壞器",
+  "block.breakerplacer.placer": "放置器",
+  "container.breakerplacer.breaker.tool_slot_tooltip": "使用的工具"
 }
