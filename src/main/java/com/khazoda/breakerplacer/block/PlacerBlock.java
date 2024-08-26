@@ -67,7 +67,7 @@ public class PlacerBlock extends BaseBlock {
             SoundEvents.BLOCK_DISPENSER_FAIL,
             SoundCategory.BLOCKS,
             1f,
-            1f
+            1.2f
         );
       } else {
         ItemStack itemStack = be.getStack(i);

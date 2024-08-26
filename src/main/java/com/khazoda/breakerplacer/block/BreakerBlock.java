@@ -34,6 +34,7 @@ import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.world.World;
+import net.minecraft.world.WorldView;
 import net.minecraft.world.event.GameEvent;
 import org.jetbrains.annotations.Nullable;
 
@@ -79,11 +80,44 @@ public class BreakerBlock extends BaseBlock {
       BlockState targetBlockState = world.getBlockState(targetPos);
       Block targetBlock = targetBlockState.getBlock();
       BlockEntity targetBE = targetBlockState.hasBlockEntity() ? world.getBlockEntity(targetPos) : null;
-
-      /* Get breaker's held tool to break blocks with */
       ItemStack toolToBreakWith = be.inventory.get(9);
+      CachedBlockPosition cachedPos = new CachedBlockPosition(world, targetPos, false);
+
+      if (targetBlock == Blocks.AIR && targetBE == null) {
+        // If there is no block to break, play dispenser fail sound and return early
+        world.playSound(
+            null,
+            pos,
+            SoundEvents.BLOCK_DISPENSER_FAIL,
+            SoundCategory.BLOCKS,
+            1f,
+            1.2f
+        );
+        return;
+      }
       try {
-        //world.getPlayers().getFirst().sendMessage(Text.literal(getDroppedStacks(targetBlockState, world, targetPos, targetBE, toolForBreaking).toString() + "  |  " + toolForBreaking));
+        if (!canBreakBlock(toolToBreakWith, cachedPos)) {
+          // If block can't be broken with current tool play a failure sound and return early
+          world.playSound(null, pos, RegSounds.FAIL, SoundCategory.BLOCKS, 1f, 1f);
+          return;
+        }
+        // Remove broken block from the world expeditiously
+        world.setBlockState(targetPos, targetBlockState.getFluidState().isOf(Fluids.WATER) ? Blocks.WATER.getDefaultState() : Blocks.AIR.getDefaultState(), Block.NOTIFY_LISTENERS | Block.FORCE_STATE);
+
+        // Do post-block break update stuff
+        world.updateNeighbors(targetPos, targetBlock);
+        state.updateNeighbors(world, targetPos, Block.NOTIFY_LISTENERS);
+        world.emitGameEvent(GameEvent.BLOCK_DESTROY, targetPos, GameEvent.Emitter.of(targetBlockState));
+
+        // Show block breaking particles to clients nearby
+        BlockBreakParticlePayload.sendBlockBreakParticlePayloadToClients(world, new BlockBreakParticlePayload(targetPos, targetBlockState));
+        ParticlePayload.sendParticlePacketToClients(world, new ParticlePayload(ParticleTypes.FLAME, targetPos, new Vec3d(0, 0, 0), 0f, (byte) 5, (byte) 2));
+        if (!world.getBlockState(targetPos.up()).isSolidBlock(world, targetPos.up()))
+          ParticlePayload.sendParticlePacketToClients(world, new ParticlePayload(ParticleTypes.WHITE_SMOKE, targetPos, new Vec3d(0, 0.4, 0), 0.02f, (byte) 10, (byte) 2));
+
+        // Play sounds to clients nearby
+        world.playSound(null, targetPos, RegSounds.BREAK, SoundCategory.BLOCKS, 0.35f, 1f);
+        world.playSound(null, targetPos, targetBlockState.getSoundGroup().getBreakSound(), SoundCategory.BLOCKS, 0.75f, 1f);
 
         List<ItemStack> l = getDroppedStacks(targetBlockState, world, targetPos, targetBE, toolToBreakWith);
         l.forEach(stack -> {
@@ -91,44 +125,11 @@ public class BreakerBlock extends BaseBlock {
           if (!be.addToFirstFreeSlot(stack)) {
             dropStacks(targetBlockState, world, targetPos, targetBE);
           }
-
-          // Remove broken block from the world expeditiously
-          world.setBlockState(targetPos, targetBlockState.getFluidState().isOf(Fluids.WATER) ? Blocks.WATER.getDefaultState() : Blocks.AIR.getDefaultState(), Block.NOTIFY_LISTENERS | Block.FORCE_STATE);
-
-          // Do post-block break update stuff
-          world.updateNeighbors(targetPos, targetBlock);
-          state.updateNeighbors(world, targetPos, Block.NOTIFY_LISTENERS);
-          world.emitGameEvent(GameEvent.BLOCK_DESTROY, targetPos, GameEvent.Emitter.of(targetBlockState));
-
-          // Show block breaking particles to clients nearby
-          BlockBreakParticlePayload.sendBlockBreakParticlePayloadToClients(world, new BlockBreakParticlePayload(targetPos, targetBlockState));
-          ParticlePayload.sendParticlePacketToClients(world, new ParticlePayload(ParticleTypes.FLAME, targetPos, new Vec3d(0, 0, 0), 0f, (byte) 5, (byte) 2));
-          if (!world.getBlockState(targetPos.up()).isSolidBlock(world, targetPos.up()))
-            ParticlePayload.sendParticlePacketToClients(world, new ParticlePayload(ParticleTypes.WHITE_SMOKE, targetPos, new Vec3d(0, 0.4, 0), 0.02f, (byte) 10, (byte) 2));
-
-          // Play sounds to clients nearby
-          world.playSound(null, targetPos, RegSounds.BREAK, SoundCategory.BLOCKS, 0.35f, 1f);
-          world.playSound(null, targetPos, targetBlockState.getSoundGroup().getBreakSound(), SoundCategory.BLOCKS, 0.75f, 1f);
-
         });
-        // If no blocks were broken play a failure sound
-        if (l.isEmpty() && targetBlock != Blocks.AIR) {
-          world.playSound(null, pos, RegSounds.FAIL, SoundCategory.BLOCKS, 1f, 1f);
-        } else if(targetBlock == Blocks.AIR) {
-          world.playSound(
-              null,
-              pos,
-              SoundEvents.BLOCK_DISPENSER_FAIL,
-              SoundCategory.BLOCKS,
-              1f,
-              1f
-          );
-        }
       } catch (Exception e) {
         Constants.LOG.warn("Failed to add block ItemStack to breaker. {}", e.getMessage());
       }
       be.markDirty();
-
     }
   }
 
@@ -151,6 +152,31 @@ public class BreakerBlock extends BaseBlock {
       return lootTable.generateLoot(parameterSet);
     }
     return Collections.emptyList();
+  }
+
+  /**
+   * miningSpeed > 0.95F ensures all hand-breakable items are breakable
+   * miningSpeed >= blockHardness ensures the correct tools are used for harder-than-hand-breakable blocks
+   **/
+  public boolean canBreakBlock(ItemStack stack, CachedBlockPosition cachedPos) {
+    // Get target block's information from cached position
+    BlockState blockState = cachedPos.getBlockState();
+    BlockPos blockPos = cachedPos.getBlockPos();
+    WorldView world = cachedPos.getWorld();
+
+    // Check if the item is a tool and get its mining speed
+    float miningSpeed = stack.getMiningSpeedMultiplier(blockState);
+
+    // Check the block's hardness
+    float blockHardness = blockState.getHardness(world, blockPos);
+
+    // Determine if the tool can break the block
+    boolean canBreak = miningSpeed > 0.95F && miningSpeed >= blockHardness;
+
+    // Additional check for specific tool materials if needed
+    boolean isCorrectTool = stack.isSuitableFor(blockState);
+
+    return canBreak || isCorrectTool;
   }
 
   @Override
