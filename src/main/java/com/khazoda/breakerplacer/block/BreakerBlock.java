@@ -154,30 +154,27 @@ public class BreakerBlock extends BaseBlock {
     return Collections.emptyList();
   }
 
-  /**
-   * miningSpeed > 0.95F ensures all hand-breakable items are breakable
-   * miningSpeed >= blockHardness ensures the correct tools are used for harder-than-hand-breakable blocks
-   **/
-  public boolean canBreakBlock(ItemStack stack, CachedBlockPosition cachedPos) {
-    // Get target block's information from cached position
-    BlockState blockState = cachedPos.getBlockState();
-    BlockPos blockPos = cachedPos.getBlockPos();
-    WorldView world = cachedPos.getWorld();
+    /**
+     * miningSpeed > 0.95F ensures all hand-breakable items are breakable
+     * miningSpeed >= blockHardness ensures the correct tools are used for harder-than-hand-breakable blocks
+     **/
+    public boolean canBreakBlock(ItemStack stack, CachedBlockPosition cachedPos) {
+        BlockState blockState = cachedPos.getBlockState();
+        BlockPos blockPos = cachedPos.getBlockPos();
+        WorldView world = cachedPos.getWorld();
 
-    // Check if the item is a tool and get its mining speed
-    float miningSpeed = stack.getMiningSpeedMultiplier(blockState);
+        float blockHardness = blockState.getHardness(world, blockPos);
 
-    // Check the block's hardness
-    float blockHardness = blockState.getHardness(world, blockPos);
+        if (blockHardness < 0.0F) {
+            return false;
+        }
 
-    // Determine if the tool can break the block
-    boolean canBreak = miningSpeed > 0.95F && miningSpeed >= blockHardness;
+        float miningSpeed = stack.getMiningSpeedMultiplier(blockState);
+        boolean canBreak = miningSpeed > 0.95F && miningSpeed >= blockHardness;
+        boolean isCorrectTool = stack.isSuitableFor(blockState);
 
-    // Additional check for specific tool materials if needed
-    boolean isCorrectTool = stack.isSuitableFor(blockState);
-
-    return canBreak || isCorrectTool;
-  }
+        return canBreak || isCorrectTool;
+    }
 
   @Override
   protected void scheduledTick(BlockState state, ServerWorld world, BlockPos pos, Random random) {
