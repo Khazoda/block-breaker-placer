@@ -72,19 +72,37 @@ public class PlacerBlock extends BaseBlock {
       } else {
         ItemStack itemStack = be.getStack(i);
         Direction direction = state.get(Properties.FACING);
-        Direction direction2 = world.isAir(pos.down()) ? direction : Direction.UP;
-        be.setStack(i, placeBlock(world, direction, pos.offset(direction), direction2, itemStack));
+        be.setStack(i, placeBlock(world, direction, pos.offset(direction), itemStack));
         be.markDirty();
       }
     }
   }
 
-  protected static ItemStack placeBlock(ServerWorld world, Direction direction, BlockPos pos, Direction direction2, ItemStack itemStack) {
+  protected static ItemStack placeBlock(ServerWorld world, Direction direction, BlockPos pos, ItemStack itemStack) {
     Item item = itemStack.getItem();
     if (item instanceof BlockItem) {
       try {
         /* Places block, and if placement fails (i.e. a block is already in the placement spot), play the error sound */
-        if (((BlockItem) item).place(new AutomaticItemPlacementContext(world, pos, direction, itemStack, direction2)) == ActionResult.FAIL) {
+        AutomaticItemPlacementContext context = new AutomaticItemPlacementContext(world, pos, direction, itemStack, direction) {
+          @Override
+          public Direction getPlayerLookDirection() {
+            return this.getSide().getOpposite();
+          }
+          @Override
+          public Direction getVerticalPlayerLookDirection() {
+            return this.getSide().getAxis() == Direction.Axis.Y ? this.getSide() : Direction.UP;
+          }
+          @Override
+          public Direction getHorizontalPlayerFacing() {
+            return this.getSide().getAxis() == Direction.Axis.Y ? Direction.NORTH : this.getSide();
+          }
+          @Override
+          public float getPlayerYaw() {
+            return this.getSide().asRotation();
+          }
+        };
+
+        if (((BlockItem) item).place(context) == ActionResult.FAIL) {
           world.playSound(
               null,
               pos.offset(direction.getOpposite()),
