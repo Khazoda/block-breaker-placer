@@ -102,11 +102,9 @@ public class BreakerBlock extends BaseBlock {
           return;
         }
         // Remove broken block from the world expeditiously
-        world.setBlockState(targetPos, targetBlockState.getFluidState().isOf(Fluids.WATER) ? Blocks.WATER.getDefaultState() : Blocks.AIR.getDefaultState(), Block.NOTIFY_LISTENERS | Block.FORCE_STATE);
+        world.setBlockState(targetPos, targetBlockState.getFluidState().isOf(Fluids.WATER) ? Blocks.WATER.getDefaultState() : Blocks.AIR.getDefaultState(), Block.NOTIFY_ALL);
 
         // Do post-block break update stuff
-        world.updateNeighbors(targetPos, targetBlock);
-        state.updateNeighbors(world, targetPos, Block.NOTIFY_LISTENERS);
         world.emitGameEvent(GameEvent.BLOCK_DESTROY, targetPos, GameEvent.Emitter.of(targetBlockState));
 
         // Show block breaking particles to clients nearby
