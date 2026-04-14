@@ -10,8 +10,11 @@ import com.mojang.serialization.MapCodec;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
+import net.minecraft.block.MapColor;
 import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.block.enums.NoteBlockInstrument;
 import net.minecraft.block.pattern.CachedBlockPosition;
+import net.minecraft.block.piston.PistonBehavior;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.item.ItemStack;
@@ -24,6 +27,7 @@ import net.minecraft.particle.ParticleTypes;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.screen.NamedScreenHandlerFactory;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.sound.BlockSoundGroup;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.state.property.Properties;
@@ -45,7 +49,7 @@ public class BreakerBlock extends BaseBlock {
   public static final MapCodec<BreakerBlock> CODEC = createCodec(BreakerBlock::new);
 
   public BreakerBlock(Settings settings) {
-    super(settings);
+    super(settings.sounds(BlockSoundGroup.STONE).strength(3.5f).pistonBehavior(PistonBehavior.NORMAL).instrument(NoteBlockInstrument.BASS).mapColor(MapColor.STONE_GRAY));
     this.setDefaultState(this.stateManager.getDefaultState().with(FACING, Direction.NORTH).with(TRIGGERED, Boolean.FALSE));
   }
 

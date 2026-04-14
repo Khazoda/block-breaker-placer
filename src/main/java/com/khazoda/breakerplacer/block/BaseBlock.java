@@ -23,10 +23,10 @@ import net.minecraft.util.math.random.Random;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
-public abstract class BaseBlock extends FacingBlock implements BlockEntityProvider {
+public abstract class BaseBlock extends BlockWithEntity {
   public static final DirectionProperty FACING = Properties.FACING;
   public static final BooleanProperty TRIGGERED = Properties.TRIGGERED;
-  public static final Settings defaultSettings = Settings.create().sounds(BlockSoundGroup.STONE).strength(3.5f).pistonBehavior(PistonBehavior.BLOCK).instrument(NoteBlockInstrument.BASS).mapColor(MapColor.STONE_GRAY);
+  public static final Settings defaultSettings = Settings.create().sounds(BlockSoundGroup.STONE).strength(3.5f).pistonBehavior(PistonBehavior.NORMAL).instrument(NoteBlockInstrument.BASS).mapColor(MapColor.STONE_GRAY);
 
   protected BaseBlock(Settings settings) {
     super(settings);
@@ -37,37 +37,53 @@ public abstract class BaseBlock extends FacingBlock implements BlockEntityProvid
     this(defaultSettings);
   }
 
+  @Override
+  protected BlockRenderType getRenderType(BlockState state) {
+    return BlockRenderType.MODEL;
+  }
+
   protected abstract void activate(ServerWorld world, BlockState state, BlockPos pos);
 
   protected NamedScreenHandlerFactory createScreenHandlerFactory(BlockState state, World world, BlockPos pos) {
     BlockEntity blockEntity = world.getBlockEntity(pos);
-    return blockEntity instanceof NamedScreenHandlerFactory ? (NamedScreenHandlerFactory) blockEntity : null;
+    return blockEntity instanceof NamedScreenHandlerFactory factory ? factory : null;
   }
 
   /* Drop contents on destroyed */
   @Override
   public void onStateReplaced(BlockState state, World world, BlockPos pos, BlockState newState, boolean moved) {
-    if (state.getBlock() != newState.getBlock()) {
-      BlockEntity be = world.getBlockEntity(pos);
+    if (state.isOf(world.getBlockState(pos).getBlock())) return;
+    BlockEntity be = world.getBlockEntity(pos);
 
-      if (be instanceof Inventory) {
-        ItemScatterer.spawn(world, pos, (Inventory) be);
-        world.updateComparators(pos, this);
-      }
+    if (be instanceof Inventory) {
+      ItemScatterer.spawn(world, pos, (Inventory) be);
+      world.updateComparators(pos, this);
+    }
 
       super.onStateReplaced(state, world, pos, newState, moved);
-    }
   }
 
   @Override
   protected void neighborUpdate(BlockState state, World world, BlockPos pos, Block sourceBlock, BlockPos sourcePos, boolean notify) {
-    boolean bl = world.isReceivingRedstonePower(pos) || world.isReceivingRedstonePower(pos.up());
-    boolean bl2 = state.get(TRIGGERED);
-    if (bl && !bl2) {
+    boolean powered =
+            world.isReceivingRedstonePower(pos) || world.isReceivingRedstonePower(pos.up());
+    boolean triggered = state.get(TRIGGERED);
+
+    if (powered && !triggered) {
       world.scheduleBlockTick(pos, this, 4);
-      world.setBlockState(pos, state.with(TRIGGERED, Boolean.TRUE), Block.NOTIFY_LISTENERS);
-    } else if (!bl && bl2) {
-      world.setBlockState(pos, state.with(TRIGGERED, Boolean.FALSE), Block.NOTIFY_LISTENERS);
+      world.setBlockState(pos, state.with(TRIGGERED, true), Block.NOTIFY_ALL);
+    } else if (!powered && triggered) {
+      world.setBlockState(pos, state.with(TRIGGERED, false), Block.NOTIFY_ALL);
+    }
+  }
+
+  @Override
+  protected void onBlockAdded(BlockState state, World world, BlockPos pos, BlockState oldState, boolean notify) {
+    if (!oldState.isOf(state.getBlock())) {
+      if (world.isReceivingRedstonePower(pos) || world.isReceivingRedstonePower(pos.up())) {
+        world.scheduleBlockTick(pos, this, 4);
+        world.setBlockState(pos, state.with(TRIGGERED, true), Block.NOTIFY_ALL);
+      }
     }
   }
 
@@ -81,7 +97,7 @@ public abstract class BaseBlock extends FacingBlock implements BlockEntityProvid
   @Nullable
   @Override
   public BlockState getPlacementState(ItemPlacementContext ctx) {
-    return this.getDefaultState().with(Properties.FACING, ctx.getPlayerLookDirection().getOpposite());
+    return this.getDefaultState().with(Properties.FACING, ctx.getPlayerLookDirection().getOpposite()).with(TRIGGERED, false);
   }
 
   @Override
